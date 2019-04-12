@@ -4,28 +4,33 @@ import (
   "fmt"
   "net"
   "bufio"
-  "time"
+//  "time"
+  "os"
 )
 
 func ListenForConnection() net.Conn {
-  listener, _ := net.Listen("tcp", ":5454")
+  listener, _ := net.Listen("tcp4", ":5454")
   conn, _ := listener.Accept()
   fmt.Println("TCP connection accepted")
   return conn
 }
 
 func ListenAndHandleTCPShell(){
+  fmt.Println("hello from the other thread")
   conn := ListenForConnection()
+  defer conn.Close()
+  stdreader := bufio.NewReader(os.Stdin)
   reader := bufio.NewReader(conn)
   writer := bufio.NewWriter(conn)
-  writer.WriteString("\n")
   go func() {
     for{
       tcpdata, _ := reader.ReadString('>')
-      fmt.Println(tcpdata)
+      fmt.Print(tcpdata)
     }
   }()
   for{
-    time.Sleep(100 * time.Millisecond)
+    text, _ := stdreader.ReadString('\n')
+    writer.WriteString(text)
+    writer.Flush()
   }
 }
