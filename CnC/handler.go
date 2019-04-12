@@ -10,27 +10,47 @@ import (
 
 func ListenForConnection() net.Conn {
   listener, _ := net.Listen("tcp4", ":5454")
-  conn, _ := listener.Accept()
+  conn, err := listener.Accept()
+  if err != nil {
+    fmt.Println("we gotta connection accept error boss")
+  }
   fmt.Println("TCP connection accepted")
   return conn
+}
+
+func CloseConnectionLoudly(conn net.Conn) {
+  conn.Close()
+  fmt.Println("Connection closed")
 }
 
 func ListenAndHandleTCPShell(){
   fmt.Println("hello from the other thread")
   conn := ListenForConnection()
-  defer conn.Close()
+  defer CloseConnectionLoudly(conn)
   stdreader := bufio.NewReader(os.Stdin)
   reader := bufio.NewReader(conn)
   writer := bufio.NewWriter(conn)
   go func() {
     for{
-      tcpdata, _ := reader.ReadString('>')
+      tcpdata, err := reader.ReadString('>')
+      if err != nil {
+        fmt.Println("we gotta tcp error boss")
+      }
       fmt.Print(tcpdata)
     }
   }()
-  for{
-    text, _ := stdreader.ReadString('\n')
-    writer.WriteString(text)
-    writer.Flush()
-  }
+  go func(){
+    for{
+      text, _ := stdreader.ReadString('\n')
+      fmt.Println("read text: " + text)
+      if text == "yeet" {
+        fmt.Println("quitting")
+        break
+      }
+      writer.WriteString(text)
+      writer.WriteString("\r\n")
+      writer.Flush()
+    }
+  }()
+  for {}
 }
