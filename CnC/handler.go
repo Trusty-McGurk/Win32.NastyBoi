@@ -4,6 +4,7 @@ import (
   "fmt"
   "net"
   "bufio"
+  "time"
 )
 
 func ListenForConnection() net.Conn {
@@ -18,8 +19,13 @@ func ListenAndHandleTCPShell(){
   reader := bufio.NewReader(conn)
   writer := bufio.NewWriter(conn)
   writer.WriteString("\n")
+  go func() {
+    for{
+      tcpdata, _ := reader.ReadString('>')
+      fmt.Println(tcpdata)
+    }
+  }()
   for{
-    tcpdata, _ := reader.ReadString('>')
-    fmt.Println(tcpdata)
+    time.Sleep(100 * time.Millisecond)
   }
 }
