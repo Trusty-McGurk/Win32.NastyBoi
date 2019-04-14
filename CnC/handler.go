@@ -23,11 +23,10 @@ func CloseConnectionLoudly(conn net.Conn) {
   fmt.Println("Connection closed")
 }
 
-func ListenAndHandleTCPShell(){
+func ListenAndHandleTCPShell(stdreader bufio.Reader){
   fmt.Println("hello from the other thread")
   conn := ListenForConnection()
   defer CloseConnectionLoudly(conn)
-  stdreader := bufio.NewReader(os.Stdin)
   reader := bufio.NewReader(conn)
   writer := bufio.NewWriter(conn)
   go func() {
