@@ -70,7 +70,6 @@ func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_c
 }
 
 func ListenForSnifferData(ip_passing_channel chan string){
-  /*
   listener, _ := net.Listen("tcp", ":6565")
   for {
     conn, err := listener.Accept()
@@ -78,17 +77,13 @@ func ListenForSnifferData(ip_passing_channel chan string){
       fmt.Println("We gotta error connecting to the sniffer: " + err.Error())
     }
     ipreader := bufio.NewReader(conn)
+    //ip, readerr := bufio.ReadString('\x00')
     ip, readerr := bufio.ReadString('\x00')
     if readerr != nil {
       fmt.Println("We gotta error reading from the sniffer: " + readerr)
     }
     fmt.Println("Read IP: " + ip)
-    */
-    time.Sleep(1000 * time.Millisecond)
-    ip := "192.168.1.53"
-    ip1 := "192.168.1.54"
     fmt.Println("Listener is passing IPs")
     ip_passing_channel <- ip
-    ip_passing_channel <- ip1
-  //}
+  }
 }
