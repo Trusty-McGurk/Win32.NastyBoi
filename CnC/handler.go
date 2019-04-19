@@ -69,7 +69,9 @@ func ListenForSnifferData(ip_passing_channel chan string){
     */
     time.Sleep(1000 * time.Millisecond)
     ip := "192.168.1.53"
-    fmt.Println("Listener is passing IP")
+    ip1 := "192.168.1.54"
+    fmt.Println("Listener is passing IPs")
     ip_passing_channel <- ip
+    ip_passing_channel <- ip1
   //}
 }
