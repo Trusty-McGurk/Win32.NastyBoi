@@ -77,10 +77,10 @@ func ListenForSnifferData(ip_passing_channel chan string){
       fmt.Println("We gotta error connecting to the sniffer: " + err.Error())
     }
     ipreader := bufio.NewReader(conn)
-    //ip, readerr := bufio.ReadString('\x00')
-    ip, readerr := bufio.ReadString('\x00')
+    //ip, readerr := reader.ReadString('\x00')
+    ip, readerr := ipreader.ReadString('\n')
     if readerr != nil {
-      fmt.Println("We gotta error reading from the sniffer: " + readerr)
+      fmt.Println("We gotta error reading from the sniffer: " + readerr.Error())
     }
     fmt.Println("Read IP: " + ip)
     fmt.Println("Listener is passing IPs")
