@@ -42,7 +42,6 @@ func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_c
     i++
     if i == 3 {
       fmt.Println("Failed to exploit target after 3 tries: " + ip)
-      conn.Close()
       return
     }
   }
