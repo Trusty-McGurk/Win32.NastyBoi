@@ -21,8 +21,11 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="eternalblue.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="ip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scan.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -32,7 +35,10 @@
     <ClCompile Include="nastyboi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="eternalblue.cpp">
+    <ClCompile Include="ip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
