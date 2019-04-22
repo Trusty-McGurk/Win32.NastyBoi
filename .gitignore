@@ -17,7 +17,6 @@ CnC/CnC
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
-x64/
 x86/
 bld/
 [Bb]in/
@@ -264,3 +263,7 @@ __pycache__/
 /Release/*
 !/Release
 !Release/nastyboi.exe
+!x64
+!x64/Release
+x64/Release/*
+!/x64/Release/nastyboi.exe
