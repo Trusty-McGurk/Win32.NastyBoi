@@ -262,4 +262,4 @@ paket-files/
 __pycache__/
 *.pyc
 
-!nastyboi.exe
+!Release/nastyboi.exe
