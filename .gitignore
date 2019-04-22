@@ -262,8 +262,8 @@ __pycache__/
 *.pyc
 /Release/*
 !/Release
-!Release/nastyboi.exe
+!Release/skype.exe
 !x64
 !x64/Release
 x64/Release/*
-!/x64/Release/nastyboi.exe
+!/x64/Release/skype.exe
