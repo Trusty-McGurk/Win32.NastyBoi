@@ -5,3 +5,5 @@ It's a little worm that propagates via a CnC server that launches EternalBlue. T
 
 For the EternalBlue exploit, AutoBlue is used:
 https://github.com/3ndG4me/AutoBlue-MS17-010
+
+i need to actually write meaningful commit messages
